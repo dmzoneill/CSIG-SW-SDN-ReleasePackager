@@ -1,0 +1,9 @@
+output.log
+WindRiverLocations.log
+.*\.html
+.*\.git
+build
+3rd-party
+OriginalFiles
+#src/ext/mgmt/cli/components/common/common_show_hndlr.py
+src/switchpp/changeList

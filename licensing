@@ -1,0 +1,4 @@
+src,source_code_license
+base,source_code_embedded_license
+src/base/src/core/adapter/adapterManager.cpp,test1
+src/base/src/core/adapter,test2
