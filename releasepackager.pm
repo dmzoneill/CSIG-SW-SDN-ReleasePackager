@@ -4,6 +4,8 @@ use warnings;
 use strict;
 
 package ReleasePackager;
+use hashaccess;
+our @ISA = ( "HashAccess" );
 
 sub new()
 {
@@ -19,23 +21,6 @@ sub new()
 	bless( $self , $class );
 	
 	return $self;
-}
-
-sub get
-{
-    my $self = shift;
-    my $key = shift;
-
-    return $self->{ $key };
-}
-
-sub set
-{
-    my $self = shift;
-    my $key = shift;
-    my $value = shift;
-
-    $self->{ $key } = $value;
 }
 
 1;

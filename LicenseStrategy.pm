@@ -103,7 +103,44 @@ sub getLicense
 
 sub replaceHeader
 {
+	my $self = shift;
+	my $file = shift;
+
+	my $pattern = $self->headerPattern();
+
+	if( !defined $pattern )
+	{
+		return 0;
+	}
+
+	Logger->new()->log( 3 , $self->headerSearchLog() . $file->{ _filePath } );
+
+	if ( $file->{ _fileContentsString } =~ m/$pattern/is )
+	{
+		my $license = $self->prepareLicense( $file->{ _filePath } );
+
+		$file->{ _fileContentsString } =~ s/($pattern)/$license/is;
+		Logger->new()->log( 1 , $self->headerReplacedLog() . $file->{ _filePath } . "\n" );
+
+		return 1;
+	}
+
 	return 0;
+}
+
+sub headerPattern
+{
+	return;
+}
+
+sub headerSearchLog
+{
+	return "replace header: ";
+}
+
+sub headerReplacedLog
+{
+	return "REPLACED HEADER: ";
 }
 
 sub addHeader
@@ -116,6 +153,34 @@ sub replaceDefine
 	return 0;
 }
 
+sub logLicenseSelection
+{
+	return 0;
+}
+
+sub licenseStyle
+{
+	return ( "", "", "\n", "" );
+}
+
+sub renderStyledLicense
+{
+	my ( $lines, $start_year, $curr_year, $prefix, $line_prefix, $line_suffix, $suffix ) = @_;
+
+	my $retVal = $prefix;
+
+	foreach my $line ( @{$lines} )
+	{
+		$line =~ s/STARTDATE/\Q$start_year/g;
+		$line =~ s/ENDDATE/\Q$curr_year/g;
+
+		$retVal .= $line_prefix . $line . $line_suffix;
+	}
+
+	$retVal .= $suffix;
+
+	return $retVal;
+}
 
 sub prepareLicense
 {
@@ -123,24 +188,28 @@ sub prepareLicense
 	my $filename = shift;
 
 	my $licensePath = LicenseStrategy::getLicense($filename);
-	
-	my @licenseText = FileManager->new()->readFile( $licensePath );
-	
-	my $start_year = $self->{ _StartYear };
-	my $curr_year = $self->{ _CurrYear };
-	
-	my $retVal = "";
 
-	foreach my $line( @licenseText ) 
+	if( $self->logLicenseSelection() )
 	{
-		$line =~ s/STARTDATE/\Q$start_year/g;
-		$line =~ s/ENDDATE/\Q$curr_year/g;
-	
-		$retVal .= $line;
-		$retVal .= "\n";
+		Logger->new()->log( 3 , "use license: $licensePath" );
 	}
 
-	return $retVal;
+	my @licenseText = FileManager->new()->readFile( $licensePath );
+
+	my $start_year = $self->{ _StartYear };
+	my $curr_year = $self->{ _CurrYear };
+
+	my ( $prefix, $line_prefix, $line_suffix, $suffix ) = $self->licenseStyle();
+
+	return LicenseStrategy::renderStyledLicense(
+		\@licenseText,
+		$start_year,
+		$curr_year,
+		$prefix,
+		$line_prefix,
+		$line_suffix,
+		$suffix
+	);
 }
 
 

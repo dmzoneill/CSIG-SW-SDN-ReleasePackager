@@ -4,6 +4,9 @@ use warnings;
 use strict;
 
 package Utils;
+use LicenseStrategy;
+use hashaccess;
+our @ISA = ( "HashAccess" );
 
 our $scriptPath = "/ons/CSIG-SW-SDN-ReleasePackager";
 #our $scriptPath = "/home/jbeegan/CSIG-SW-SDN-ReleasePackager";
@@ -74,7 +77,7 @@ sub prepareLicense
 
 	my $licensePath = $Utils::scriptPath . "/source_code_license";
 
-	if( open( my $bom, "licensing" ) )
+	if( open( my $bom, "<", "licensing" ) )
 	{
 		while( my $line = <$bom> )
 		{
@@ -93,58 +96,19 @@ sub prepareLicense
 	
 	my @licenseText = FileManager->new()->readFile( $licensePath );
 
-	my $retVal = "";
 	my $start_year = 2011;
 	my $curr_year = $self->getYear();
-	
+
 	if( $ext eq ".cpp" || $ext eq ".c" || $ext eq ".h" || $ext eq ".onsi" )
 	{
-		$retVal = "/*";
-
-		foreach my $line( @licenseText ) 
-		{
-			$line =~ s/STARTDATE/\Q$start_year/g;
-			$line =~ s/ENDDATE/\Q$curr_year/g;
-		
-			$retVal .= " " . $line;
-			$retVal .= "\n *";
-		}
-
-		$retVal .= "/\n";
+		return LicenseStrategy::renderStyledLicense( \@licenseText, $start_year, $curr_year, "/*", " ", "\n *", "/\n" );
 	}
 	elsif( $ext eq ".py" )
 	{
-		$retVal = "\"\"\"\n";
-
-		foreach my $line( @licenseText ) 
-		{
-			$line =~ s/STARTDATE/\Q$start_year/g;
-			$line =~ s/ENDDATE/\Q$curr_year/g;
-		
-			$retVal .= $line . "\n";
-		}
-
-		$retVal .= "\"\"\"\n\n";
+		return LicenseStrategy::renderStyledLicense( \@licenseText, $start_year, $curr_year, "\"\"\"\n", "", "\n", "\"\"\"\n\n" );
 	}
-	
-	return $retVal;
-}
 
-sub get
-{
-    my $self = shift;
-    my $key = shift;
-
-    return $self->{ $key };
-}
-
-sub set
-{
-    my $self = shift;
-    my $key = shift;
-    my $value = shift;
-
-    $self->{ $key } = $value;
+	return "";
 }
 
 1;

@@ -5,6 +5,8 @@ use strict;
 
 package File;
 use LicenseStrategy;
+use hashaccess;
+our @ISA = ( "HashAccess" );
 
 sub new()
 {
@@ -95,23 +97,5 @@ sub scan
 	
 	$self->close();
 }
-
-sub set
-{
-	my $self = shift;
-	my $key = shift;
-	my $value = shift;
-
-	$self->{ $key } = $value;
-}
-
-sub get
-{
-	my $self = shift;
-	my $key = shift;
-
-	return $self->{ $key };
-}
-
 
 1;
