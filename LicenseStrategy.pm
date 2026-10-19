@@ -43,27 +43,27 @@ sub getStategyInstance
 		
 	if( $ext eq ".cpp" || $ext eq ".c" || $ext eq ".h" || $ext eq ".onsi" || $ext eq ".i" )
 	{
-		$strategy = new CLicenseStrategy();
+		$strategy = CLicenseStrategy->new();
 	}
 	elsif( $ext eq ".py" || $ext eq ".mk" )
 	{
-		$strategy = new PythonLicenseStrategy();
+		$strategy = PythonLicenseStrategy->new();
 	}		
 	elsif( $ext eq ".am" || $ext eq ".ac")
 	{	
-		$strategy = new MakefileLicenseStrategy();
+		$strategy = MakefileLicenseStrategy->new();
 	}
 	elsif( $ext eq ".xml" )
 	{	
-		$strategy = new XMLLicenseStrategy();
+		$strategy = XMLLicenseStrategy->new();
 	}
 	elsif( $file->{ _filePath } =~ m/\/COPYING$/i )
 	{
-		$strategy = new CopyingLicenseStrategy();
+		$strategy = CopyingLicenseStrategy->new();
 	}
 	else
 	{
-		$strategy = new LicenseStrategy();
+		$strategy = LicenseStrategy->new();
 	}
 	
 	return $strategy;

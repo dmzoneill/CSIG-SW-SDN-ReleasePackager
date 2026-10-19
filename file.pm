@@ -77,7 +77,7 @@ sub scan
 			if( $line =~ m/(?<=define).*?copyright.*?/i)
 			{
 				$defineReplaced = $strategy->replaceDefine($self);	
-				if ($defineReplaced == 1) #prevent windriver logging for occurence if it has been acted upon
+				if ($defineReplaced == 1) #prevent windriver logging for occurrence if it has been acted upon
 				{
 					next;
 				}		

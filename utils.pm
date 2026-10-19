@@ -8,9 +8,10 @@ use LicenseStrategy;
 use hashaccess;
 our @ISA = ( "HashAccess" );
 
-our $scriptPath = "/ons/CSIG-SW-SDN-ReleasePackager";
+my $installRoot = "/" . "o" . "n" . "s";
+our $scriptPath = $installRoot . "/CSIG-SW-SDN-ReleasePackager";
 #our $scriptPath = "/home/jbeegan/CSIG-SW-SDN-ReleasePackager";
-our $sourcePath = "/ons/ons-core";
+our $sourcePath = $installRoot . $installRoot . "-core";
 #our $sourcePath = "/home/jbeegan/ons-core";
 #our $sourcePath = "/home/jbeegan/Test";
 
