@@ -5,6 +5,8 @@ use strict;
 
 package File;
 use LicenseStrategy;
+use hashaccess;
+our @ISA = ( "HashAccess" );
 
 sub new()
 {
@@ -75,7 +77,7 @@ sub scan
 			if( $line =~ m/(?<=define).*?copyright.*?/i)
 			{
 				$defineReplaced = $strategy->replaceDefine($self);	
-				if ($defineReplaced == 1) #prevent windriver logging for occurence if it has been acted upon
+				if ($defineReplaced == 1) #prevent windriver logging for occurrence if it has been acted upon
 				{
 					next;
 				}		
@@ -95,23 +97,5 @@ sub scan
 	
 	$self->close();
 }
-
-sub set
-{
-	my $self = shift;
-	my $key = shift;
-	my $value = shift;
-
-	$self->{ $key } = $value;
-}
-
-sub get
-{
-	my $self = shift;
-	my $key = shift;
-
-	return $self->{ $key };
-}
-
 
 1;

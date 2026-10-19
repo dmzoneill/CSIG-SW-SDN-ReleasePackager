@@ -7,84 +7,24 @@ package CopyingLicenseStrategy;
 use LicenseStrategy;
 our @ISA = ( "LicenseStrategy" );
 
-sub new()
+sub headerPattern
 {
-	my ( $class ) = @_;
-	
-	my $self = $class->SUPER::new();
-	
-	bless( $self , $class );
-	
-	return $self;
+	return '^Copyright.*?Wind River.*?Wind River.*?\n';
 }
 
-sub replaceHeader
+sub headerSearchLog
 {
-	my $self = shift;
-	my $file = shift;
-
-	Logger->new()->log( 3 , "replace copying: " . $file->{ _filePath } );
-			
-	if ( $file->{ _fileContentsString } =~ m/^Copyright.*?Wind River.*?Wind River.*?\n/is ) 
-	{
-		my $license = $self->prepareLicense( $file->{ _filePath });
-		
-		$file->{ _fileContentsString } =~ s/(^Copyright.*?Wind River.*?Wind River.*?\n)/$license/is;			
-		Logger->new()->log( 1 , "REPLACED COPYING: " . $file->{ _filePath } . "\n" );
-		
-		return 1;
-	}			
-	return 0;
+	return "replace copying: ";
 }
 
-sub addHeader
+sub headerReplacedLog
 {
-	return 0
+	return "REPLACED COPYING: ";
 }
 
-sub replaceDefine
+sub logLicenseSelection
 {
-	return 0
+	return 1;
 }
-
-
-
-sub prepareLicense
-{
-	my $self = shift;
-	my $filename = shift;
-
-	my $licensePath = LicenseStrategy::getLicense($filename);
-	
-	Logger->new()->log( 3 , "use license: $licensePath" );
-	
-	my @licenseText = FileManager->new()->readFile( $licensePath );
-	
-	my $start_year = $self->{ _StartYear };
-	my $curr_year = $self->{ _CurrYear };
-	
-	my $retVal = "";
-
-	foreach my $line( @licenseText ) 
-	{
-		$line =~ s/STARTDATE/\Q$start_year/g;
-		$line =~ s/ENDDATE/\Q$curr_year/g;
-	
-		$retVal .= $line;
-		$retVal .= "\n";
-	}
-
-	return $retVal;
-}
-
-
-
-
-
-
-
-
-
-
 
 1;

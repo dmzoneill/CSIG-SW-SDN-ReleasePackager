@@ -4,6 +4,8 @@ use warnings;
 use strict;
 
 package BillOfMaterials;
+use hashaccess;
+our @ISA = ( "HashAccess" );
 
 my $instance = undef;
 
@@ -87,7 +89,7 @@ sub getLicenseList
 	my $self = shift;
 	my $filename = shift;
 
-	if( open( my $fh, "licensing" ) )
+	if( open( my $fh, "<", "licensing" ) )
 	{
 		while( my $line = <$fh> )
 		{
@@ -152,22 +154,5 @@ Logger->new()->log( 3 , $printout );
 
 
 
-
-sub set
-{
-	my $self = shift;
-	my $key = shift;
-	my $value = shift;
-
-	$self->{ $key } = $value;
-}
-
-sub get
-{
-	my $self = shift;
-	my $key = shift;
-
-	return $self->{ $key };
-}
 
 1;
